@@ -45,8 +45,16 @@ export default function Navbar() {
   const target = hover ?? current;
 
   useEffect(() => {
-    const el = refs.current[target];
-    setPill(el ? { x: el.offsetLeft, w: el.offsetWidth, on: true } : { x: 0, w: 0, on: false });
+    const updatePill = () => {
+      const el = refs.current[target];
+      setPill(el && el.offsetWidth > 0
+        ? { x: el.offsetLeft, w: el.offsetWidth, on: true }
+        : { x: 0, w: 0, on: false });
+    };
+
+    updatePill();
+    window.addEventListener("resize", updatePill);
+    return () => window.removeEventListener("resize", updatePill);
   }, [target]);
 
   return (
